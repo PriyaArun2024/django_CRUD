@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 
 from django.http import HttpResponse
 from .models import Item
@@ -16,6 +16,13 @@ def item_create(request):
         if form.is_valid():
             form.save()    
             return redirect('item_list')    
-        else:
-            form=Itemform()
+    else:
+        form=Itemform()
     return render(request,'itemform.html',{'form':form})
+def item_delete(request,pk):
+    item = get_object_or_404(Item,pk=pk)
+    if request.method=='POST':
+        item.delete()
+        return redirect('item_list')
+    return redirect(request,'itemconfirmdelete.html',{'item':item})
+
